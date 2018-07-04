@@ -2,18 +2,18 @@
 Porting apistar features to flask
 
 ### Project Scope:
- - API Documentation from flask endpiont function signatures (incomplete)
- - Dependency injection (not started)
+ - API Documentation from flask endpiont function signatures
+    - Native Types (functional)
+    - URL Parameters (functional)
+    - Query parameters (functional)
+    - Endpoint groups by flask blueprint (functional)
+    - APIStar typesystem support (not functional)
+ - Dependency injection
+    - Builtin components (not functional)
+    - User defined component framework (not functional)
 
-#### API Documentation from function signatures
-Functional
-  - Native types
-  - URL parameters
-  - Query parameters
-  - Endpoint groupings (groups by flask blueprint)
-
-Not Functional
-  - apistar typesystem objects
+#### API Documentation
+Goals for api documentation are to dynamically produce accurate documentation automatically from function signatures and type declarations. A minimal working example is below
 ```python
 from flask import Flask
 from flask_star import Documentation
@@ -33,4 +33,41 @@ if __name__ == '__main__':
                              docs_route='/docs/')
     print(api_docs)
     app.run(debug=True, port=5000)
+```
+Generates browser viewable documentation
+![myimage](examples/basic/docs.png)
+And a corresponding openapi specification at `/<docs_route>/openapi.json`
+```json
+{                                                                 
+    "openapi": "3.0.0",                                           
+    "info": {                                                     
+        "title": "flask_star",                                    
+        "description": "Basic flask_star example",                
+        "version": ""                                             
+    },                                                            
+    "paths": {                                                    
+        "/welcome/{name}": {                                      
+            "get": {                                              
+                "operationId": "welcome",                         
+                "parameters": [                                   
+                    {                                             
+                        "name": "name",                           
+                        "in": "path",                             
+                        "required": true,                         
+                        "schema": {                               
+                            "type": "string"                      
+                        }                                         
+                    },                                            
+                    {                                             
+                        "name": "title",                          
+                        "in": "query",                            
+                        "schema": {                               
+                            "type": "string"                      
+                        }                                         
+                    }                                             
+                ]                                                 
+            }                                                     
+        }                                                         
+    }                                                             
+}
 ```
