@@ -21,7 +21,7 @@ from flask_star import Documentation
 app = Flask(__name__)
 
 @app.route('/welcome/{name}')
-def welcome(name: str, title: str):
+def welcome(name: str, title: str = ''):
     return f'Welcome {title} {name}'
 
 if __name__ == '__main__':
