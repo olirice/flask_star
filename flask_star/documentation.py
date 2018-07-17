@@ -2,9 +2,10 @@ from typing import List
 from apistar.server.core import generate_document
 from apistar import Document, Include, Route
 import json
-from apistar.codecs import OpenAPICodec, JSONSchemaCodec
 from flask import Flask, Blueprint
 from flask import render_template, redirect, send_from_directory, send_file
+
+from apistar.codecs import OpenAPICodec, JSONSchemaCodec
 
 # For Statics
 import jinja2
@@ -69,7 +70,7 @@ class Documentation():
             method = [method
                       for method in rule.methods
                       if method.upper() not in ['HEAD', 'OPTIONS']][0]
-            
+
             rule_hash = (url, method)
             if rule_hash not in self.seen_rules:
                 self.seen_rules.add(rule_hash)
@@ -139,7 +140,7 @@ class Documentation():
             """Serve index.html of api documentation"""
             docs_root = os.path.join(self.static_dir, 'docs')
             return send_from_directory(docs_root, 'index.html')
-        
+
 
         @self.app.route(self.docs_route + 'openapi.json', methods=['GET'])
         def serve_schema():
@@ -148,13 +149,12 @@ class Documentation():
             return serve_static(docs_root + '/' + 'openapi.json')
 
         @self.app.route(self.docs_route + '<path:filename>', methods=['GET'])
-        def serve_static(filename):
+        def serve_static(filename, **kwargs):
             """Serve static dependencies of api documentation"""
-            # TODO(OR): Maket his OS safe
+            # TODO(OR): Make this OS safe
             path, filename = filename.rsplit('/', 1)
             return send_from_directory(path, filename)
 
-        
     def __repr__(self):
         loaded = json.loads(self.get_spec())
         return json.dumps(loaded, indent=4)
